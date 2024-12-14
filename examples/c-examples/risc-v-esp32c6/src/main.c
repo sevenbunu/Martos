@@ -35,11 +35,11 @@ int main( void ) {
 // Application entry point / startup logic.
 void __attribute__( ( noreturn ) ) call_start_cpu0() {
     // Clear BSS.
-    memset( &_bss_start, 0, ( &_bss_end - &_bss_start ) * sizeof( _bss_start ) );
-    // Copy initialized data.
-    memmove( &_data_start, &_sidata, ( &_data_end - &_data_start ) * sizeof( _data_start ) );
+    // memset( &_bss_start, 0, ( &_bss_end - &_bss_start ) * sizeof( _bss_start ) );
+    // // Copy initialized data.
+    // memmove( &_data_start, &_sidata, ( &_data_end - &_data_start ) * sizeof( _data_start ) );
 
-    // Done, branch to main
+    // // Done, branch to main
     main();
     // (Should never be reached)
     while( 1 ) {}
