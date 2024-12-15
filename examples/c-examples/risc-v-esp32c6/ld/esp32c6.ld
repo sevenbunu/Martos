@@ -60,30 +60,6 @@ SECTIONS
     *(.init)
   } > iram_seg
 
-
-  /* Shared RAM */
-  .dram0.bss (NOLOAD) :
-  {
-    . = ALIGN (8);
-    _dram_start = ABSOLUTE(.);
-    _bss_start = ABSOLUTE(.);
-    *(.dynsbss)
-    *(.sbss)
-    *(.sbss.*)
-    *(.gnu.linkonce.sb.*)
-    *(.scommon)
-    *(.sbss2)
-    *(.sbss2.*)
-    *(.gnu.linkonce.sb2.*)
-    *(.dynbss)
-    *(.bss)
-    *(.bss.*)
-    *(.gnu.linkonce.b.*)
-    *(COMMON)
-    . = ALIGN (8);
-    _bss_end = ABSOLUTE(.);
-  } > dram_seg
-
   .dram0.rodata :
   {
     _rodata_start = ABSOLUTE(.);
