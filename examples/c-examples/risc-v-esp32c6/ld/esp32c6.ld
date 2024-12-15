@@ -88,6 +88,27 @@ SECTIONS
     _data_end = ABSOLUTE(.);
   } > dram_seg
 
+  .iram.text :
+  {
+    _stext = .;
+    _text_start = ABSOLUTE(.);
+    *(.literal .text .literal.* .text.* .stub .gnu.warning .gnu.linkonce.literal.* .gnu.linkonce.t.*.literal .gnu.linkonce.t.*)
+    *(.iram .iram.*) /* catch stray IRAM_ATTR */
+    *(.fini.literal)
+    *(.fini)
+    *(.gnu.version)
+
+    /** CPU will try to prefetch up to 16 bytes of
+      * of instructions. This means that any configuration (e.g. MMU, PMS) must allow
+      * safe access to up to 16 bytes after the last real instruction, add
+      * dummy bytes to ensure this
+      */
+    . += 16;
+
+    _text_end = ABSOLUTE(.);
+    _etext = .;
+  } > iram_seg
+
   .riscv.attributes 0: { *(.riscv.attributes) }
 }
 
