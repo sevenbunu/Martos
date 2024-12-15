@@ -91,19 +91,50 @@ SECTIONS
     *(.data_bootloader_desc .data_bootloader_desc.*)               /* Should be the first.  Bootloader version info.        DO NOT PUT ANYTHING BEFORE IT! */
   } > dram_seg
 
-  .dram0.data :
+  .dram0.rodata :
   {
-    *(.dram1 .dram1.*) /* catch stray DRAM_ATTR */
-    *(.data)
-    *(.data.*)
-    *(.gnu.linkonce.d.*)
-    *(.data1)
-    *(.sdata)
-    *(.sdata.*)
-    *(.gnu.linkonce.s.*)
-    *(.gnu.linkonce.s2.*)
-    *(.jcr)
-    _data_end = ABSOLUTE(.);
+    _rodata_start = ABSOLUTE(.);
+    *(.rodata)
+    *(.rodata.*)
+    *(.gnu.linkonce.r.*)
+    *(.rodata1)
+    *(.sdata2 .sdata2.* .srodata .srodata.*)
+    __XT_EXCEPTION_TABLE_ = ABSOLUTE(.);
+    *(.xt_except_table)
+    *(.gcc_except_table)
+    *(.gnu.linkonce.e.*)
+    *(.gnu.version_r)
+    *(.eh_frame_hdr)
+    *(.eh_frame)
+    . = (. + 3) & ~ 3;
+    /* C++ constructor and destructor tables, properly ordered: */
+    __init_array_start = ABSOLUTE(.);
+    KEEP (*crtbegin.*(.ctors))
+    KEEP (*(EXCLUDE_FILE (*crtend.*) .ctors))
+    KEEP (*(SORT(.ctors.*)))
+    KEEP (*(.ctors))
+    __init_array_end = ABSOLUTE(.);
+    KEEP (*crtbegin.*(.dtors))
+    KEEP (*(EXCLUDE_FILE (*crtend.*) .dtors))
+    KEEP (*(SORT(.dtors.*)))
+    KEEP (*(.dtors))
+    /*  C++ exception handlers table:  */
+    __XT_EXCEPTION_DESCS_ = ABSOLUTE(.);
+    *(.xt_except_desc)
+    *(.gnu.linkonce.h.*)
+    __XT_EXCEPTION_DESCS_END__ = ABSOLUTE(.);
+    *(.xt_except_desc_end)
+    *(.dynamic)
+    *(.gnu.version_d)
+    _rodata_end = ABSOLUTE(.);
+    /* Literals are also RO data. */
+    _lit4_start = ABSOLUTE(.);
+    *(*.lit4)
+    *(.lit4.*)
+    *(.gnu.linkonce.lit4.*)
+    _lit4_end = ABSOLUTE(.);
+    . = ALIGN(4);
+    _dram_end = ABSOLUTE(.);
   } > dram_seg
 
   .iram.text :
