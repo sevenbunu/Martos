@@ -11,27 +11,24 @@ OS = $(TOOLCHAIN)size
 
 LDSCRIPT       = ./ld/esp32c6.ld
 
-CFLAGS += $(INC) -Wall -Werror -std=gnu11 -nostdlib $(CFLAGS_PLATFORM) $(COPT)
+CFLAGS += -Wall -Werror -std=gnu11 -nostdlib $(CFLAGS_PLATFORM)
 CFLAGS += -fno-strict-aliasing
 CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -Os -g
 
 LDFLAGS += -L../../../c-library/risc-v-esp32-c6/target/riscv32imac-unknown-none-elf/release -lrisc_v_esp32c6_static_lib
-LDFLAGS += -nostdlib -T$(LDSCRIPT) -Wl,-Map=$@.map -Wl,--cref -Wl,--gc-sections
+LDFLAGS += -nostdlib -Wl,-Map=$@.map -Wl,--cref -Wl,--gc-sections -Wl,--unresolved-symbols=ignore-all
 LDFLAGS += $(LDFLAGS_PLATFORM)
 LDFLAGS += -lm -lgcc
 ASFLAGS += -c -O0 -Wall -fmessage-length=0
 ASFLAGS += $(ASFLAGS_PLATFORM)
 
-C_SRC += \
-	./src/main.c \
+C_SRC += ./src/main.c
 
 OBJS += $(C_SRC:.c=.o)
 
 .PHONY: all
 all: main.elf
-
-# Rules to build files.
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
@@ -39,7 +36,6 @@ all: main.elf
 main.elf: $(OBJS)
 	$(CC) $^ $(LDFLAGS) -o $@
 
-# Target to clean build artifacts.
 .PHONY: clean
 clean:
 	rm -f $(OBJS)
